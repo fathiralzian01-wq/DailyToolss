@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Daily Tools</title>
+<style>
+:root{
+  --bg:#0a0e1a; --card:rgba(255,255,255,.055); --line:rgba(255,255,255,.09);
+  --txt:#eef1ff; --mut:#98a2c3; --a1:#8b5cf6; --a2:#22d3ee; --ok:#34d399; --bad:#fb7185;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-user-select:none;user-select:none}
+.bg{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+.bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.45}
+.bg i:nth-child(1){width:260px;height:260px;background:var(--a1);top:-80px;left:-70px;animation:f1 14s ease-in-out infinite alternate}
+.bg i:nth-child(2){width:240px;height:240px;background:var(--a2);bottom:-60px;right:-80px;animation:f2 16s ease-in-out infinite alternate}
+@keyframes f1{to{transform:translate(60px,90px)}} @keyframes f2{to{transform:translate(-50px,-80px)}}
+main{position:relative;z-index:1;max-width:560px;margin:0 auto;
+  padding:calc(22px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.logo{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;flex:none;
+  background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 8px 28px rgba(139,92,246,.45)}
+.logo svg{width:28px;height:28px}
+h1{font-size:22px;margin:0;letter-spacing:.2px}
+.sub{margin:2px 0 0;font-size:12.5px;color:var(--mut)}
+.pill{margin-left:auto;font-size:12px;font-weight:600;padding:6px 11px;border-radius:99px;
+  border:1px solid var(--line);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.pill:before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+.pill.on{color:var(--ok);background:rgba(52,211,153,.1)} .pill.off{color:var(--bad);background:rgba(251,113,133,.1)}
+.summary{display:flex;gap:10px;margin-bottom:14px}
+.stat{flex:1;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.stat b{display:block;font-size:20px}
+.stat span{font-size:12px;color:var(--mut)}
+.warn{padding:12px 14px;border-radius:14px;background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.35);
+  color:#ffc9d1;font-size:13px;line-height:1.45;margin-bottom:12px}
+.warn.info{background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.3);color:#b6f0fa}
+.hidden{display:none!important}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:opacity .25s}
+.card.off{opacity:.62}
+.row{display:flex;align-items:center;gap:13px}
+.ico{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;flex:none;
+  background:linear-gradient(135deg,rgba(139,92,246,.28),rgba(34,211,238,.2));color:#c4b5fd}
+.ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.grow{flex:1;min-width:0}
+.t{font-weight:650;font-size:15.5px}
+.d{font-size:12.8px;color:var(--mut);margin-top:3px;line-height:1.4}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:11.5px;padding:4px 9px;border-radius:99px;background:rgba(255,255,255,.07);color:#c9d0ee;border:1px solid var(--line)}
+.chip.p{background:rgba(139,92,246,.18);border-color:rgba(139,92,246,.4);color:#ddd2ff}
+.chip button{all:unset;margin-left:6px;cursor:pointer;opacity:.7}
+.sw{position:relative;width:52px;height:30px;flex:none}
+.sw input{opacity:0;position:absolute;inset:0;width:100%;height:100%;margin:0;z-index:2}
+.sw span{position:absolute;inset:0;border-radius:99px;background:rgba(255,255,255,.14);transition:.25s}
+.sw span:after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;
+  transition:.25s;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.sw input:checked+span{background:linear-gradient(135deg,var(--a1),var(--a2))}
+.sw input:checked+span:after{transform:translateX(22px)}
+.seg{display:flex;background:rgba(0,0,0,.28);border-radius:12px;padding:3px;margin-top:12px}
+.seg button{all:unset;flex:1;text-align:center;font-size:12.5px;padding:8px 6px;border-radius:9px;color:var(--mut);cursor:pointer;transition:.2s}
+.seg button.on{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-weight:600}
+.btn{all:unset;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  padding:11px 16px;border-radius:13px;font-size:13.5px;font-weight:600;
+  background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;transition:transform .12s}
+.btn:active{transform:scale(.96)}
+.btn.ghost{background:rgba(255,255,255,.08);border:1px solid var(--line)}
+.btn.danger{background:rgba(251,113,133,.15);border:1px solid rgba(251,113,133,.4);color:#ffc9d1}
+.btn.sm{padding:8px 12px;font-size:12.5px;margin-top:10px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+h2{font-size:13px;letter-spacing:.9px;text-transform:uppercase;color:var(--mut);margin:22px 4px 10px}
+ol{margin:10px 0 0;padding-left:20px;font-size:13px;line-height:1.7;color:#cfd5f0}
+code{background:rgba(255,255,255,.09);padding:2px 6px;border-radius:6px;font-size:12px;-webkit-user-select:text;user-select:text}
+pre{margin:10px 0 0;max-height:240px;overflow:auto;background:rgba(0,0,0,.35);border-radius:12px;padding:10px;
+  font-size:11px;line-height:1.5;color:#b9c2e6;white-space:pre-wrap;word-break:break-all;-webkit-user-select:text;user-select:text}
+footer{text-align:center;color:var(--mut);font-size:12px;margin-top:22px}
+#shade{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20;opacity:0;pointer-events:none;transition:.25s}
+#shade.show{opacity:1;pointer-events:auto}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-width:560px;margin:0 auto;height:80vh;
+  background:#12172b;border-top:1px solid var(--line);border-radius:24px 24px 0 0;
+  transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+#sheet.show{transform:none}
+.grab{width:42px;height:4px;border-radius:9px;background:rgba(255,255,255,.2);margin:10px auto 6px}
+.sh{padding:6px 16px 6px;display:flex;gap:10px;align-items:center}
+.sh input[type=search]{flex:1;min-width:0;background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--txt);
+  padding:11px 14px;border-radius:12px;font-size:14px;outline:none;-webkit-user-select:text;user-select:text}
+.sh input[type=search]:focus{border-color:var(--a1)}
+.opt{padding:4px 18px 8px;font-size:12.5px;color:var(--mut);display:flex;align-items:center;gap:8px}
+.opt input{accent-color:#8b5cf6}
+#list{flex:1;overflow:auto;padding:0 10px 20px}
+.app{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:12px}
+.app:active{background:rgba(255,255,255,.06)}
+.app .av{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:700;flex:none;overflow:hidden;
+  background:linear-gradient(135deg,rgba(139,92,246,.35),rgba(34,211,238,.28))}
+.app .av img{width:100%;height:100%;object-fit:cover}
+.app small{display:block;color:var(--mut);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app b{font-size:14px;font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app input{width:20px;height:20px;accent-color:#8b5cf6;flex:none}
+.empty{text-align:center;color:var(--mut);padding:30px;font-size:13px}
+#toast{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));transform:translate(-50%,30px);opacity:0;z-index:30;
+  background:#222a46;border:1px solid var(--line);padding:11px 16px;border-radius:13px;font-size:13px;
+  transition:.28s;pointer-events:none;max-width:88vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i></div>
+<main>
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
+    </div>
+    <div>
+      <h1>Daily Tools</h1>
+      <p class="sub" id="ver">WebUI · LSPosed module</p>
+    </div>
+    <div class="pill off" id="pill">memeriksa…</div>
+  </header>
+
+  <div class="warn hidden" id="warn"></div>
+
+  <div class="summary">
+    <div class="stat"><b id="sOn">0/4</b><span>fitur aktif</span></div>
+    <div class="stat"><b id="sDark">–</b><span>target dark mode</span></div>
+  </div>
+
+  <h2>Fitur</h2>
+  <section id="features"></section>
+
+  <h2>Alat</h2>
+  <div class="card" id="lstCard">
+    <div class="row">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2z"/><path d="M18 16v-5a6 6 0 0 0-12 0v5l-2 2h16z"/></svg></div>
+      <div class="grow">
+        <div class="t">Akses notifikasi</div>
+        <div class="d" id="lstDesc">Dibutuhkan Auto-copy OTP. Diaktifkan lewat root, tanpa membuka Setelan.</div>
+      </div>
+    </div>
+    <button class="btn sm" id="btnLst">Aktifkan akses notifikasi</button>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+      <div class="grow">
+        <div class="t">Test Auto-copy OTP</div>
+        <div class="d">Kirim notifikasi uji berisi kode <code>482913</code>. Kalau hook SystemUI jalan, kode langsung masuk clipboard.</div>
+      </div>
+    </div>
+    <button class="btn sm" id="btnTest">Kirim notifikasi uji</button>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+      <div class="grow">
+        <div class="t">Log modul</div>
+        <div class="d">Baris log <code>[DailyTools]</code> dari logcat untuk mencari tahu hook yang gagal.</div>
+      </div>
+    </div>
+    <div class="btns"><button class="btn sm ghost" id="btnLog">Muat log</button>
+    <button class="btn sm danger" id="btnReset">Reset pengaturan</button></div>
+    <pre id="log" class="hidden"></pre>
+  </div>
+
+  <h2>Panduan scope</h2>
+  <div class="card">
+    <div class="d" style="margin-top:0">Di LSPosed → Modul → Daily Tools, centang:</div>
+    <ol>
+      <li><b>System Framework</b> (<code>android</code>) untuk bypass FLAG_SECURE</li>
+      <li><b>Auto-copy OTP</b> tidak butuh scope. Cukup aktifkan <b>akses notifikasi</b> lewat kartu di atas</li>
+      <li>App yang ingin dipakai untuk copy teks, FLAG_SECURE, dan dark mode</li>
+      <li>Reboot, lalu force stop app target setiap mengubah scope</li>
+    </ol>
+  </div>
+
+  <footer>Perubahan tersimpan otomatis · hook membaca ulang tiap ±2 detik</footer>
+</main>
+
+<div id="shade"></div>
+<div id="sheet">
+  <div class="grab"></div>
+  <div class="sh">
+    <input id="q" type="search" placeholder="Cari app atau nama paket…" autocomplete="off">
+    <button class="btn ghost" id="closeSheet">Selesai</button>
+  </div>
+  <label class="opt"><input type="checkbox" id="sysApps"> Tampilkan app sistem</label>
+  <div id="list"></div>
+</div>
+<div id="toast"></div>
+
+<script>
+(function(){
+  var HAS = !!(window.ksu && typeof window.ksu.exec === "function");
+  var KEYS = {flag_secure:"dt_flag_secure", auto_otp:"dt_auto_otp", copy_text:"dt_copy_text", force_dark:"dt_force_dark"};
+  var PKEY = "dt_dark_pkgs";
+  var $ = function(id){return document.getElementById(id)};
+
+  /* ---------- jembatan ke root shell (KernelSU WebUI API) ---------- */
+  var cbN = 0;
+  function exec(cmd){
+    return new Promise(function(resolve){
+      var cb = "dt_cb_" + Date.now() + "_" + (cbN++);
+      window[cb] = function(errno, out, err){
+        delete window[cb];
+        resolve({errno:errno, out:out||"", err:err||""});
+      };
+      try{ window.ksu.exec(cmd, "{}", cb); }
+      catch(e){ delete window[cb]; resolve({errno:-1, out:"", err:String(e)}); }
+    });
+  }
+
+  /* ---------- mode pratinjau (di luar KernelSU) ---------- */
+  var mock = {flag_secure:true,auto_otp:true,copy_text:false,force_dark:true,dark:"*",apk:true,lst:"id.dailytools.lsp/id.dailytools.lsp.OtpListenerService",rel:"15",rom:"preview"};
+
+  async function readState(){
+    if(!HAS) return JSON.parse(JSON.stringify(mock));
+    var r = await exec(
+      'for k in dt_flag_secure dt_auto_otp dt_copy_text dt_force_dark dt_dark_pkgs; do echo "$k=$(settings get global $k)"; done;'+
+      ' echo "apk=$(pm path id.dailytools.lsp 2>/dev/null | head -n1)";'+
+      ' echo "lst=$(settings get secure enabled_notification_listeners)";'+
+      ' echo "rel=$(getprop ro.build.version.release)"; echo "rom=$(getprop ro.build.display.id)"');
+    var m = {};
+    r.out.split("\n").forEach(function(l){var i=l.indexOf("="); if(i>0) m[l.slice(0,i)] = l.slice(i+1).trim();});
+    function b(k){var v=m[k]; return (v===undefined||v===""||v==="null") ? true : !(v==="0"||v==="false");}
+    var dk = m.dt_dark_pkgs;
+    return {
+      flag_secure:b("dt_flag_secure"), auto_otp:b("dt_auto_otp"), copy_text:b("dt_copy_text"), force_dark:b("dt_force_dark"),
+      dark:(dk && dk!=="null" && dk!=="") ? dk : "*",
+      apk:(m.apk||"").indexOf("package:")===0, lst:m.lst||"", rel:m.rel||"", rom:m.rom||""
+    };
+  }
+  async function setBool(key, v){
+    if(!HAS){ mock[key]=v; return true; }
+    var r = await exec("settings put global "+KEYS[key]+" "+(v?1:0));
+    return r.errno===0;
+  }
+  async function setPkgs(val){
+    if(!HAS){ mock.dark=val; return true; }
+    if(!/^[A-Za-z0-9_.,*]+$/.test(val)) return false;
+    var r = await exec("settings put global "+PKEY+" '"+val+"'");
+    return r.errno===0;
+  }
+  async function listApps(all){
+    if(!HAS) return ["com.contoh.app","com.contoh.browser","com.contoh.video"];
+    var r = await exec("pm list packages "+(all?"":"-3")+" | cut -d: -f2 | sort");
+    return r.out.split("\n").map(function(s){return s.trim()}).filter(Boolean);
+  }
+  function labelsFor(pkgs){
+    var map = {};
+    try{
+      if(HAS && typeof window.ksu.getPackagesInfo==="function"){
+        var r = window.ksu.getPackagesInfo(JSON.stringify(pkgs));
+        if(typeof r==="string") r = JSON.parse(r);
+        (r||[]).forEach(function(i){ if(i&&i.packageName) map[i.packageName]=i.appLabel||i.label||i.packageName; });
+      }
+    }catch(e){}
+    return map;
+  }
+  async function testOtp(){
+    if(!HAS) return true;
+    var r = await exec("cmd notification post -t 'Daily Tools' dttest 'Kode OTP Anda 482913. Jangan bagikan kode ini ke siapa pun.'");
+    return r.errno===0;
+  }
+  async function readLog(){
+    if(!HAS) return "(pratinjau) tidak ada log";
+    var r = await exec("logcat -d 2>/dev/null | grep -i dailytools | tail -n 40");
+    return r.out.trim() || "Belum ada baris log [DailyTools]. Itu normal kalau semua hook berhasil.";
+  }
+  async function resetAll(){
+    if(!HAS){ mock={flag_secure:true,auto_otp:true,copy_text:true,force_dark:true,dark:"*",apk:true,rel:"15",rom:"preview"}; return true; }
+    var r = await exec('for k in dt_flag_secure dt_auto_otp dt_copy_text dt_force_dark dt_dark_pkgs; do settings delete global $k; done');
+    return r.errno===0;
+  }
+
+  /* ---------- UI ---------- */
+  var FEATURES = [
+    {key:"flag_secure", title:"Bypass FLAG_SECURE",
+     desc:"Screenshot dan screen record di app yang memblokirnya.",
+     scope:["System Framework","App target"],
+     icon:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>'},
+    {key:"auto_otp", title:"Auto-copy OTP",
+     desc:"Kode OTP dari notifikasi SMS/WhatsApp langsung masuk clipboard dengan toast kecil.",
+     scope:["Notification Listener","Tanpa LSPosed"],
+     icon:'<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>'},
+    {key:"copy_text", title:"Copy teks dari mana saja",
+     desc:"Tekan lama teks apa pun yang tidak bisa diseleksi, lalu salin dari dialog.",
+     scope:["App target"],
+     icon:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>'},
+    {key:"force_dark", title:"Paksa dark mode",
+     desc:"Algorithmic darkening untuk app tanpa mode gelap. Mode gelap sistem harus aktif.",
+     scope:["App target"],
+     icon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'}
+  ];
+
+  var S = {}, PK = {all:true, list:[]}, labelMap = {}, toastT;
+  function toast(m){var t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);
+    toastT=setTimeout(function(){t.classList.remove("show")},2200);}
+
+  function parsePk(){
+    var raw=String(S.dark==null?"*":S.dark).trim();
+    var parts=raw.split(/[,\s]+/).filter(Boolean);
+    PK={all:parts.indexOf("*")>=0, list:parts.filter(function(x){return x!=="*"&&x!=="none"})};
+  }
+  async function savePk(){
+    var v = PK.all ? "*" : (PK.list.length ? PK.list.join(",") : "none");
+    S.dark = v;
+    var ok = await setPkgs(v);
+    if(!ok) toast("Gagal menyimpan daftar app");
+    renderDark(); renderSummary();
+  }
+
+  function renderSummary(){
+    var n = FEATURES.filter(function(f){return S[f.key]}).length;
+    $("sOn").textContent = n+"/"+FEATURES.length;
+    $("sDark").textContent = !S.force_dark ? "mati" : (PK.all ? "semua" : PK.list.length+" app");
+  }
+
+  function buildFeatures(){
+    var box=$("features"); box.innerHTML="";
+    FEATURES.forEach(function(f){
+      var c=document.createElement("div");
+      c.className="card"+(S[f.key]?"":" off");
+      var chips=f.scope.map(function(s){return '<span class="chip">'+s+'</span>'}).join("");
+      c.innerHTML=
+        '<div class="row"><div class="ico"><svg viewBox="0 0 24 24">'+f.icon+'</svg></div>'+
+        '<div class="grow"><div class="t">'+f.title+'</div><div class="d">'+f.desc+'</div></div>'+
+        '<label class="sw"><input type="checkbox"><span></span></label></div>'+
+        '<div class="chips">'+chips+'</div>'+
+        (f.key==="force_dark"?'<div id="darkExtra"></div>':'');
+      var inp=c.querySelector("input"); inp.checked=!!S[f.key];
+      inp.addEventListener("change", async function(){
+        var want=inp.checked;
+        var ok=await setBool(f.key,want);
+        if(ok){ S[f.key]=want; c.classList.toggle("off",!want); renderSummary();
+          toast(f.title+(want?" diaktifkan":" dimatikan")); }
+        else { inp.checked=!want; toast("Gagal menyimpan (cek izin root)"); }
+      });
+      box.appendChild(c);
+    });
+  }
+
+  function renderDark(){
+    var ex=$("darkExtra"); if(!ex) return; ex.innerHTML="";
+    var seg=document.createElement("div"); seg.className="seg";
+    seg.innerHTML='<button data-m="all">Semua app di scope</button><button data-m="sel">Pilih app sendiri</button>';
+    seg.querySelectorAll("button").forEach(function(b){
+      b.classList.toggle("on",(b.dataset.m==="all")===PK.all);
+      b.onclick=function(){PK.all=(b.dataset.m==="all");savePk();};
+    });
+    ex.appendChild(seg);
+    if(!PK.all){
+      var wrap=document.createElement("div"); wrap.className="chips";
+      if(!PK.list.length) wrap.innerHTML='<span class="chip">Belum ada app dipilih</span>';
+      PK.list.forEach(function(p){
+        var ch=document.createElement("span"); ch.className="chip p";
+        ch.appendChild(document.createTextNode(labelMap[p]||p));
+        var x=document.createElement("button"); x.textContent="✕";
+        x.onclick=function(){PK.list=PK.list.filter(function(v){return v!==p});savePk();};
+        ch.appendChild(x); wrap.appendChild(ch);
+      });
+      ex.appendChild(wrap);
+      var add=document.createElement("button"); add.className="btn sm"; add.textContent="＋ Pilih app";
+      add.onclick=openSheet; ex.appendChild(add);
+    }
+  }
+
+  /* ---------- bottom sheet pilih app ---------- */
+  var apps=[], loadedAll=null;
+  async function loadApps(all){
+    if(loadedAll===all) return;
+    apps = await listApps(all); loadedAll = all;
+    var m = labelsFor(apps); for(var k in m) labelMap[k]=m[k];
+  }
+  function renderList(){
+    var q=$("q").value.trim().toLowerCase(), list=$("list"); list.innerHTML="";
+    var shown=apps.filter(function(p){return !q||p.toLowerCase().indexOf(q)>=0||(labelMap[p]||"").toLowerCase().indexOf(q)>=0});
+    shown.sort(function(a,b){return (labelMap[a]||a).toLowerCase()<(labelMap[b]||b).toLowerCase()?-1:1});
+    if(!shown.length){list.innerHTML='<div class="empty">Tidak ada app yang cocok</div>';return;}
+    var frag=document.createDocumentFragment();
+    shown.forEach(function(p){
+      var name=labelMap[p]||p;
+      var row=document.createElement("label"); row.className="app";
+      var av=document.createElement("div"); av.className="av"; av.textContent=(name[0]||"?").toUpperCase();
+      if(HAS){
+        var img=document.createElement("img"); img.loading="lazy"; img.src="ksu://icon/"+p;
+        img.onload=function(){av.textContent="";av.appendChild(img)}; 
+      }
+      var mid=document.createElement("div"); mid.style.cssText="flex:1;min-width:0";
+      var b=document.createElement("b"); b.textContent=name;
+      var s=document.createElement("small"); s.textContent=p;
+      mid.appendChild(b); mid.appendChild(s);
+      var cb=document.createElement("input"); cb.type="checkbox"; cb.checked=PK.list.indexOf(p)>=0;
+      cb.onchange=function(){
+        if(cb.checked){ if(PK.list.indexOf(p)<0) PK.list.push(p); }
+        else PK.list=PK.list.filter(function(v){return v!==p});
+        savePk();
+      };
+      row.appendChild(av); row.appendChild(mid); row.appendChild(cb); frag.appendChild(row);
+    });
+    list.appendChild(frag);
+  }
+  async function openSheet(){
+    $("shade").classList.add("show"); $("sheet").classList.add("show");
+    $("list").innerHTML='<div class="empty">Memuat daftar app…</div>';
+    await loadApps($("sysApps").checked); $("q").value=""; renderList();
+  }
+  function closeSheet(){$("shade").classList.remove("show");$("sheet").classList.remove("show");}
+  $("shade").onclick=closeSheet; $("closeSheet").onclick=closeSheet;
+  $("q").addEventListener("input",renderList);
+  $("sysApps").addEventListener("change",async function(){
+    $("list").innerHTML='<div class="empty">Memuat…</div>';
+    await loadApps($("sysApps").checked); renderList();
+  });
+
+  /* ---------- alat ---------- */
+  $("btnTest").onclick=async function(){
+    var ok=await testOtp();
+    toast(ok?"Notifikasi uji terkirim. Cek clipboard.":"Gagal mengirim notifikasi uji.");
+  };
+  $("btnLog").onclick=async function(){
+    var pre=$("log"); pre.classList.remove("hidden"); pre.textContent="Memuat…";
+    pre.textContent=await readLog();
+  };
+  var resetArm=false, resetT;
+  $("btnReset").onclick=async function(){
+    var b=$("btnReset");
+    if(!resetArm){ resetArm=true; b.textContent="Yakin? Tekan lagi"; clearTimeout(resetT);
+      resetT=setTimeout(function(){resetArm=false;b.textContent="Reset pengaturan"},3000); return; }
+    resetArm=false; b.textContent="Reset pengaturan";
+    var ok=await resetAll();
+    if(ok){ await init(); toast("Pengaturan dikembalikan ke default"); } else toast("Gagal reset");
+  };
+
+  /* ---------- akses notifikasi ---------- */
+  var LST = "id.dailytools.lsp/id.dailytools.lsp.OtpListenerService";
+  function renderListener(){
+    var on = (S.lst||"").indexOf("id.dailytools.lsp/")>=0;
+    $("lstDesc").textContent = on ? "Aktif. Auto-copy OTP siap dipakai." : "Belum aktif. Auto-copy OTP butuh akses ini.";
+    $("lstDesc").style.color = on ? "var(--ok)" : "";
+    $("btnLst").style.display = on ? "none" : "";
+  }
+  $("btnLst").onclick=async function(){
+    if(!HAS){ mock.lst=LST; await init(); return; }
+    var r = await exec("cmd notification allow_listener "+LST+"; dumpsys deviceidle whitelist +id.dailytools.lsp");
+    await init();
+    toast((S.lst||"").indexOf("id.dailytools.lsp/")>=0 ? "Akses notifikasi aktif" : "Gagal. Pastikan APK sudah terpasang.");
+  };
+
+  /* ---------- init ---------- */
+  async function init(){
+    S = await readState(); parsePk();
+    var pill=$("pill");
+    if(S.apk){pill.className="pill on";pill.textContent="APK terpasang";}
+    else{pill.className="pill off";pill.textContent="APK belum ada";}
+    $("ver").textContent="WebUI · Android "+(S.rel||"?")+(S.rom?" · "+S.rom:"");
+    var warn=$("warn"), msgs=[];
+    if(!HAS) msgs.push("Mode pratinjau: dibuka di luar KernelSU, perubahan tidak disimpan ke sistem.");
+    if(HAS && !S.apk) msgs.push("APK Daily Tools (modul LSPosed) belum terpasang. Pasang dulu, lalu aktifkan di LSPosed.");
+    warn.className="warn"+(HAS?"":" info")+(msgs.length?"":" hidden");
+    warn.innerHTML=msgs.join("<br>");
+    buildFeatures(); renderDark(); renderSummary(); renderListener();
+    var cur = PK.list.slice(); if(cur.length){ var m=labelsFor(cur); for(var k in m) labelMap[k]=m[k]; renderDark(); }
+  }
+  init();
+})();
+</script>
+</body>
+</html>

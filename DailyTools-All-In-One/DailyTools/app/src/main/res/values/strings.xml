@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Daily Tools</string>
+    <string name="xposed_desc">Bypass FLAG_SECURE, copy teks dari mana saja, dan paksa dark mode. Auto-copy OTP lewat NotificationListener.</string>
+</resources>
